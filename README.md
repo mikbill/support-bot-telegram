@@ -19,21 +19,21 @@
 Устанвливаем пакеты и зависимости
 ```shell script
 cd /var/www/
-git clone https://github.com/kagatan/mb-support-bot.git
-cd mb-support-bot
+git clone https://github.com/mikbill/support-bot-telegram.git
+cd support-bot-telegram
 
 composer install
 
 # даем права
-sudo chown -R www-data:www-data /var/www/mb-support-bot
-sudo chmod -R 775 /var/www/mb-support-bot/storage/
+sudo chown -R www-data:www-data /var/www/support-bot-telegram
+sudo chmod -R 775 /var/www/support-bot-telegram/storage/
 
 ```
 
 ### 2. Nginx 
 
 создаем конфиг на публичную диреторию
-/var/www/mb-support-bot/public
+/var/www/support-bot-telegram/public
 
 в идеале вынести на отдельный поддомен, и указать его в конфиге APP_URL
 для вебхука телеграма обязателен валидный сертификат
@@ -48,7 +48,7 @@ p.s. необходима если будет использовать вебх�
    }
 
    location / {
-        root   /var/www/mb-support-bot/public;
+        root   /var/www/support-bot-telegram/public;
         index  index.php;
         try_files $uri $uri/ /index.php?$args;
    }
@@ -57,7 +57,7 @@ p.s. необходима если будет использовать вебх�
       include /etc/nginx/fastcgi_params;
       fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
       fastcgi_index index.php;
-      fastcgi_param SCRIPT_FILENAME /var/www/mb-support-bot/public$fastcgi_script_name;
+      fastcgi_param SCRIPT_FILENAME /var/www/support-bot-telegram/public$fastcgi_script_name;
    }
 
 ...
@@ -67,7 +67,7 @@ p.s. необходима если будет использовать вебх�
 ### 2.1 Apache
 
 создаем конфиг на публичную диреторию
-/var/www/mb-support-bot/public
+/var/www/support-bot-telegram/public
 
 
 пример .htaccess
