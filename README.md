@@ -12,6 +12,12 @@
  - просмотр услуг
  - вход в ЛК 
  
+### Changelog:
+#### 23.04.2022
+- Добавлена локализация бота uk, en, ru
+- Валюта берется из настроек биллинга
+
+ 
 ![png image](https://github.com/kagatan/mb-support-bot/blob/master/resources/img/image.png?raw=true)
 
 ### 1. Установка
@@ -125,12 +131,28 @@ php artisan telebot:webhook --setup
 php artisan telebot:webhook --remove
 ```
 
-### 5. Long pooling
+### 5. Long polling
 
-Запустить в режиме пулинга без вебхука.
+Запустить в режиме поллинга без вебхука.
 
 Чтоб запустить необходимо сначала выполнить команду 
 "удалить вебхук" если он установлен
 ```php
 php artisan telebot:polling --all
+```
+
+### Смена локализации
+ Поддерживаемы локали:
+- uk - Ukraine
+- en - English
+- ru - Russian 
+
+Для того чтобы сменить локализацию бота , к примеру, на EN необходимо добавить переменную в файл конфига .env:
+```shell script
+APP_LOCALE=en
+```
+
+Файлы локализаций находятся по пути:
+```shell script
+/resources/lang/ru.json
 ```

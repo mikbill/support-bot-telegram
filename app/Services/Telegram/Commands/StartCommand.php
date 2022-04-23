@@ -16,11 +16,11 @@ class StartCommand extends Command
         $chat_id = $this->update->message->from->id;
 
         if (isset($this->update->message->chat->last_name, $this->update->message->chat->first_name)) {
-            $text = "<b>Добро пожаловать,  " . $this->update->message->chat->last_name . " " . $this->update->message->chat->first_name . " ! </b> \n\n";
+            $text = "<b>" . trans("hello") . ",  " . $this->update->message->chat->last_name . " " . $this->update->message->chat->first_name . " ! </b> 👋 \n\n";
         } else {
-            $text = "<b>Добро пожаловать ! </b> \n\n";
+            $text = "<b>" . trans("hello") . "! </b> 👋 \n\n";
         }
-        $text .= "Ваш ID: " . $chat_id . "\n";
+        $text .= trans("your_id") . " " . $chat_id . "\n";
 
         $this->sendMessage([
             'text'       => $text,
@@ -29,23 +29,36 @@ class StartCommand extends Command
 
         if ($this->isAuth()) {
 
-            $text = "🎉 Поздравляем! Вы получили доступ к данным!";
+            $text = trans("auth_success");
             $this->sendMessage([
                 'text'       => $text,
                 'parse_mode' => 'HTML'
             ]);
 
-            $this->menuMain();
+            $this->setLastAction('menuMain');
+
+            $this->sendMessage([
+                'text'         => "<b>" . trans("main_menu") . "</b>",
+                'parse_mode'   => 'HTML',
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                "text"          => trans("menu_search"),
+                                "callback_data" => "menuSearch"
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+
         } else {
 
-            $text = "🙅‍♂️ К сожалению, Вам запрещен доступ! \n";
-            $text .= "Собщите ваш ID администратору и еще раз введите команду /start ";
+            $text = trans("auth_error");
             $this->sendMessage([
                 'text'       => $text,
                 'parse_mode' => 'HTML'
             ]);
         }
-
-
     }
 }

@@ -25,12 +25,6 @@ class CallBackCommand extends Command
 
     public function handle()
     {
-//        $this->answerCallbackQuery([
-//            'callback_query_id' => $this->update->callback_query->id,
-//            'text'              => 'Загружаем...',
-//            "alert"             => false
-//        ]);
-
         $params = explode("_", $this->update->callback_query->data);
 
         if (isset($params[0]) and method_exists(self::class, $params[0])) {
@@ -39,7 +33,7 @@ class CallBackCommand extends Command
         } else {
 
             $this->sendMessage([
-                'text'       => '⚠️ Мы еще работаем над этим меню... ',
+                'text'       => trans("menu_not_work"),
                 'parse_mode' => 'HTML'
             ]);
         }
@@ -47,9 +41,10 @@ class CallBackCommand extends Command
 
     private function menuSearch($param)
     {
-        $this->setMenu('menuSearch');
+        $this->setLastAction('menuSearch');
 
-        $text = '<b>Выберите поле поиска:</b>';
+        $text = "<b>" . trans("choice_search_field") . "</b>";
+
         $this->sendMessage([
             'text'         => $text,
             'parse_mode'   => 'HTML',
@@ -57,15 +52,15 @@ class CallBackCommand extends Command
                 'inline_keyboard' => [
                     [
                         [
-                            'text'          => 'По UID',
+                            'text'          => trans("menu_search_by_uid"),
                             'callback_data' => "menuSearchByUID"
                         ],
                         [
-                            "text"          => "По логину",
+                            "text"          => trans("menu_search_by_login"),
                             "callback_data" => "menuSearchByLogin"
                         ],
                         [
-                            'text'          => 'По договору',
+                            'text'          => trans("menu_search_by_contract"),
                             'callback_data' => "menuSearchByDogovor"
                         ]
                     ]
@@ -76,9 +71,9 @@ class CallBackCommand extends Command
 
     private function menuSearchByUID($param)
     {
-        $this->setMenu('menuSearchByUID');
+        $this->setLastAction('menuSearchByUID');
 
-        $text = '<b>Введите UID:</b>';
+        $text = "<b>" . trans("enter_uid") . "</b>";
         $this->sendMessage([
             'text'       => $text,
             'parse_mode' => 'HTML',
@@ -87,9 +82,9 @@ class CallBackCommand extends Command
 
     private function menuSearchByDogovor($param)
     {
-        $this->setMenu('menuSearchByDogovor');
+        $this->setLastAction('menuSearchByDogovor');
 
-        $text = '<b>Введите договор:</b>';
+        $text = "<b>" . trans("enter_contract") . "</b>";
         $this->sendMessage([
             'text'       => $text,
             'parse_mode' => 'HTML',
@@ -98,9 +93,9 @@ class CallBackCommand extends Command
 
     private function menuSearchByLogin($param)
     {
-        $this->setMenu('menuSearchByLogin');
+        $this->setLastAction('menuSearchByLogin');
 
-        $text = '<b>Введите логин:</b>';
+        $text = "<b>" . trans("enter_login") . "</b>";
         $this->sendMessage([
             'text'       => $text,
             'parse_mode' => 'HTML',
@@ -109,7 +104,7 @@ class CallBackCommand extends Command
 
     private function menuHistorySessions($param)
     {
-        $this->setMenu('menuHistorySessions');
+        $this->setLastAction('menuHistorySessions');
 
         if (isset($param[1])) {
             $api = new API();
@@ -129,11 +124,11 @@ class CallBackCommand extends Command
                     'inline_keyboard' => [
                         [
                             [
-                                "text"          => "🔍 Поиск",
+                                "text"          => trans("menu_search"),
                                 "callback_data" => "menuSearch"
                             ],
                             [
-                                'text'          => '💡 Главное меню',
+                                'text'          => trans("menu_main"),
                                 'callback_data' => "menuMain"
                             ]
                         ]
@@ -146,7 +141,7 @@ class CallBackCommand extends Command
 
     private function menuServices($param)
     {
-        $this->setMenu('menuServices');
+        $this->setLastAction('menuServices');
 
         if (isset($param[1])) {
             $api = new API();
@@ -154,34 +149,34 @@ class CallBackCommand extends Command
 
             $services = $user['services'];
 
-            $text = "<b>Услуги абонента:</b> \n\n";
+            $text = "<b>" . trans("services_user") . "</b> \n\n";
 
-            if(!empty($services['active'])){
-                $text .= "Активные: \n";
+            if (!empty($services['active'])) {
+                $text .= trans("services_active") . " \n";
                 foreach ($services['active'] as $row) {
                     $text .= $row['serviceid'] . " " . $row['servicename'] . " \n";
                 }
-                $text.= "\n";
+                $text .= "\n";
             }
 
-            if(!empty($services['basic'])){
-                $text .= "Базовые: \n";
+            if (!empty($services['basic'])) {
+                $text .= trans("services_basic") . " \n";
                 foreach ($services['basic'] as $row) {
                     $text .= $row['serviceid'] . " " . $row['servicename'] . " \n";
                 }
-                $text.= "\n";
+                $text .= "\n";
             }
 
-            if(!empty($services['personal'])){
-                $text .= "Индивидуальные: \n";
+            if (!empty($services['personal'])) {
+                $text .= trans("services_individual") . " \n";
                 foreach ($services['personal'] as $row) {
                     $text .= $row['serviceid'] . " " . $row['servicename'] . " \n";
                 }
-                $text.= "\n";
+                $text .= "\n";
             }
 
-            if(empty($services['active']) and empty($services['basic']) and empty($services['personal'])){
-                $text .= "🤔 Услуги не найдены...";
+            if (empty($services['active']) and empty($services['basic']) and empty($services['personal'])) {
+                $text .= trans("services_not_found");
             }
 
             $this->sendMessage([
@@ -191,11 +186,11 @@ class CallBackCommand extends Command
                     'inline_keyboard' => [
                         [
                             [
-                                "text"          => "🔍 Поиск",
+                                "text"          => trans("menu_search"),
                                 "callback_data" => "menuSearch"
                             ],
                             [
-                                'text'          => '💡 Главное меню',
+                                'text'          => trans("menu_main"),
                                 'callback_data' => "menuMain"
                             ]
                         ]
@@ -207,13 +202,13 @@ class CallBackCommand extends Command
 
     private function menuHistoryPayments($param)
     {
-        $this->setMenu('menuHistoryPayments');
+        $this->setLastAction('menuHistoryPayments');
 
         if (isset($param[1])) {
             $api = new API();
             $history = $api->getHistoryPaymentsMB($param[1]);
 
-            $text = "История платежей: \n\n";
+            $text = trans("history_payment") . " \n\n";
             $text .= "<pre> " . str_pad('Date', 20) . " | " . str_pad('Summa', 10) . " | " . str_pad('Type', 40) . " </pre>\n";
             $text .= "<pre> " . str_pad('-', 20, '-') . " + " . str_pad('-', 10, '-') . " + " . str_pad('-', 40, '-') . " </pre>\n";
             foreach ($history as $row) {
@@ -227,11 +222,11 @@ class CallBackCommand extends Command
                     'inline_keyboard' => [
                         [
                             [
-                                "text"          => "🔍 Поиск",
+                                "text"          => trans("menu_search"),
                                 "callback_data" => "menuSearch"
                             ],
                             [
-                                'text'          => '💡 Главное меню',
+                                'text'          => trans("menu_main"),
                                 'callback_data' => "menuMain"
                             ]
                         ]
@@ -242,14 +237,31 @@ class CallBackCommand extends Command
 
     }
 
-    private function menuCabinet()
+    private function menuMain()
     {
+        $this->setLastAction('menuMain');
 
+        $this->sendMessage([
+            'text'         => "<b>" . trans("main_menu") . "</b>",
+            'parse_mode'   => 'HTML',
+            'reply_markup' => [
+                'inline_keyboard' => [
+                    [
+                        [
+                            "text"          => trans("menu_search"),
+                            "callback_data" => "menuSearch"
+                        ]
+                    ]
+                ]
+            ]
+        ]);
     }
 
     private function menuHelp()
     {
-        $text = "🧑‍💻 Мы работаем,еще чуть чуть и здесь будет справка.";
+        $this->setLastAction('menuHelp');
+
+        $text = trans("menu_not_work");
 
         $this->sendMessage([
             'text'       => $text,
