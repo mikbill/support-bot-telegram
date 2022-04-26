@@ -77,7 +77,8 @@ class InputCommand extends Command
                 $text .= "<b>" . trans("phone_sms") . ":</b> " . $user['sms_tel'] . "\n";
                 $text .= "<b>" . trans("deposit") . ":</b> " . $user['deposit'] . " " . (isset($systemOptions['data'][0]['UE']) ? $systemOptions['data'][0]['UE'] : 'грн.') . " \n";
                 $text .= "<b>" . trans("credit") . ":</b> " . $user['credit'] . " " . (isset($systemOptions['data'][0]['UE']) ? $systemOptions['data'][0]['UE'] : 'грн.') . " \n";
-                $text .= "<b>IP:</b> " . $user['framed_ip'] . "\n";
+                $text .= "<b>Framed IP:</b> " . $user['framed_ip'] . "\n";
+                $text .= "<b>Local IP:</b> " . $user['local_ip'] . "\n";
                 $text .= "<b>" . trans("internet") . ":</b> " . ($user['blocked'] ? '🚫' : '✅') . "\n";
                 $text .= "<b>On-line:</b> " . ($user['online'] ? '✅' : '🚫') . "\n";
                 $text .= "<b>" . trans("status") . ":</b> " . $status . "\n";
