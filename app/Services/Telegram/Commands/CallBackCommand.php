@@ -33,7 +33,7 @@ class CallBackCommand extends Command
         } else {
 
             $this->sendMessage([
-                'text'       => trans("menu_not_work"),
+                'text'       => $this->translate("menu_not_work"),
                 'parse_mode' => 'HTML'
             ]);
         }
@@ -43,7 +43,7 @@ class CallBackCommand extends Command
     {
         $this->setLastAction('menuSearch');
 
-        $text = "<b>" . trans("choice_search_field") . "</b>";
+        $text = "<b>" . $this->translate("choice_search_field") . "</b>";
 
         $this->sendMessage([
             'text'         => $text,
@@ -52,15 +52,15 @@ class CallBackCommand extends Command
                 'inline_keyboard' => [
                     [
                         [
-                            'text'          => trans("menu_search_by_uid"),
+                            'text'          => $this->translate("menu_search_by_uid"),
                             'callback_data' => "menuSearchByUID"
                         ],
                         [
-                            "text"          => trans("menu_search_by_login"),
+                            "text"          => $this->translate("menu_search_by_login"),
                             "callback_data" => "menuSearchByLogin"
                         ],
                         [
-                            'text'          => trans("menu_search_by_contract"),
+                            'text'          => $this->translate("menu_search_by_contract"),
                             'callback_data' => "menuSearchByDogovor"
                         ]
                     ]
@@ -73,7 +73,7 @@ class CallBackCommand extends Command
     {
         $this->setLastAction('menuSearchByUID');
 
-        $text = "<b>" . trans("enter_uid") . "</b>";
+        $text = "<b>" . $this->translate("enter_uid") . "</b>";
         $this->sendMessage([
             'text'       => $text,
             'parse_mode' => 'HTML',
@@ -84,7 +84,7 @@ class CallBackCommand extends Command
     {
         $this->setLastAction('menuSearchByDogovor');
 
-        $text = "<b>" . trans("enter_contract") . "</b>";
+        $text = "<b>" . $this->translate("enter_contract") . "</b>";
         $this->sendMessage([
             'text'       => $text,
             'parse_mode' => 'HTML',
@@ -95,7 +95,7 @@ class CallBackCommand extends Command
     {
         $this->setLastAction('menuSearchByLogin');
 
-        $text = "<b>" . trans("enter_login") . "</b>";
+        $text = "<b>" . $this->translate("enter_login") . "</b>";
         $this->sendMessage([
             'text'       => $text,
             'parse_mode' => 'HTML',
@@ -124,11 +124,11 @@ class CallBackCommand extends Command
                     'inline_keyboard' => [
                         [
                             [
-                                "text"          => trans("menu_search"),
+                                "text"          => $this->translate("menu_search"),
                                 "callback_data" => "menuSearch"
                             ],
                             [
-                                'text'          => trans("menu_main"),
+                                'text'          => $this->translate("menu_main"),
                                 'callback_data' => "menuMain"
                             ]
                         ]
@@ -149,10 +149,10 @@ class CallBackCommand extends Command
 
             $services = $user['services'];
 
-            $text = "<b>" . trans("services_user") . "</b> \n\n";
+            $text = "<b>" . $this->translate("services_user") . "</b> \n\n";
 
             if (!empty($services['active'])) {
-                $text .= trans("services_active") . " \n";
+                $text .= $this->translate("services_active") . " \n";
                 foreach ($services['active'] as $row) {
                     $text .= $row['serviceid'] . " " . $row['servicename'] . " \n";
                 }
@@ -160,7 +160,7 @@ class CallBackCommand extends Command
             }
 
             if (!empty($services['basic'])) {
-                $text .= trans("services_basic") . " \n";
+                $text .= $this->translate("services_basic") . " \n";
                 foreach ($services['basic'] as $row) {
                     $text .= $row['serviceid'] . " " . $row['servicename'] . " \n";
                 }
@@ -168,7 +168,7 @@ class CallBackCommand extends Command
             }
 
             if (!empty($services['personal'])) {
-                $text .= trans("services_individual") . " \n";
+                $text .= $this->translate("services_individual") . " \n";
                 foreach ($services['personal'] as $row) {
                     $text .= $row['serviceid'] . " " . $row['servicename'] . " \n";
                 }
@@ -176,7 +176,7 @@ class CallBackCommand extends Command
             }
 
             if (empty($services['active']) and empty($services['basic']) and empty($services['personal'])) {
-                $text .= trans("services_not_found");
+                $text .= $this->translate("services_not_found");
             }
 
             $this->sendMessage([
@@ -186,11 +186,11 @@ class CallBackCommand extends Command
                     'inline_keyboard' => [
                         [
                             [
-                                "text"          => trans("menu_search"),
+                                "text"          => $this->translate("menu_search"),
                                 "callback_data" => "menuSearch"
                             ],
                             [
-                                'text'          => trans("menu_main"),
+                                'text'          => $this->translate("menu_main"),
                                 'callback_data' => "menuMain"
                             ]
                         ]
@@ -208,7 +208,7 @@ class CallBackCommand extends Command
             $api = new API();
             $history = $api->getHistoryPaymentsMB($param[1]);
 
-            $text = trans("history_payment") . " \n\n";
+            $text = $this->translate("history_payment") . " \n\n";
             $text .= "<pre> " . str_pad('Date', 20) . " | " . str_pad('Summa', 10) . " | " . str_pad('Type', 40) . " </pre>\n";
             $text .= "<pre> " . str_pad('-', 20, '-') . " + " . str_pad('-', 10, '-') . " + " . str_pad('-', 40, '-') . " </pre>\n";
             foreach ($history as $row) {
@@ -222,11 +222,11 @@ class CallBackCommand extends Command
                     'inline_keyboard' => [
                         [
                             [
-                                "text"          => trans("menu_search"),
+                                "text"          => $this->translate("menu_search"),
                                 "callback_data" => "menuSearch"
                             ],
                             [
-                                'text'          => trans("menu_main"),
+                                'text'          => $this->translate("menu_main"),
                                 'callback_data' => "menuMain"
                             ]
                         ]
@@ -242,14 +242,18 @@ class CallBackCommand extends Command
         $this->setLastAction('menuMain');
 
         $this->sendMessage([
-            'text'         => "<b>" . trans("main_menu") . "</b>",
+            'text'         => "<b>" . $this->translate("main_menu") . "</b>",
             'parse_mode'   => 'HTML',
             'reply_markup' => [
                 'inline_keyboard' => [
                     [
                         [
-                            "text"          => trans("menu_search"),
+                            "text"          => $this->translate("menu_search"),
                             "callback_data" => "menuSearch"
+                        ],
+                        [
+                            "text"          => $this->translate("menu_locale"),
+                            "callback_data" => "menuLocale"
                         ]
                     ]
                 ]
@@ -257,11 +261,53 @@ class CallBackCommand extends Command
         ]);
     }
 
+    private function menuLocale() {
+        $this->setLastAction('menuLocale');
+
+        $this->sendMessage([
+            'text'         => "<b>" . $this->translate("menu_locale") . "</b>",
+            'parse_mode'   => 'HTML',
+            'reply_markup' => [
+                'inline_keyboard' => [
+                    [
+                        [
+                            "text"          => $this->translate("menu_locale_ua"),
+                            "callback_data" => "menuSeTLocaleUa"
+                        ],
+                        [
+                            "text"          => $this->translate("menu_locale_ru"),
+                            "callback_data" => "menuSeTLocaleRu"
+                        ],
+                        [
+                            "text"          => $this->translate("menu_locale_en"),
+                            "callback_data" => "menuSeTLocaleEn"
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    private function menuSeTLocaleUa() {
+        $this->setLocale("uk");
+        $this->menuMain();
+    }
+
+    private function menuSeTLocaleRu() {
+        $this->setLocale("ru");
+        $this->menuMain();
+    }
+
+    private function menuSeTLocaleEn() {
+        $this->setLocale("en");
+        $this->menuMain();
+    }
+
     private function menuHelp()
     {
         $this->setLastAction('menuHelp');
 
-        $text = trans("menu_not_work");
+        $text = $this->translate("menu_not_work");
 
         $this->sendMessage([
             'text'       => $text,

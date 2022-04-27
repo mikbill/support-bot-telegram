@@ -18,7 +18,6 @@ abstract class Command extends CommandHandler
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
-
         $this->checkAuth();
     }
 
@@ -37,6 +36,10 @@ abstract class Command extends CommandHandler
             $this->user_id = $this->update->callback_query->from->id;
         }
 
+        if(empty($allowed_id)) {
+            return $this->isAuth = true;
+        }
+
         return $this->isAuth = in_array($this->user_id, $allowed_id);
     }
 
@@ -48,5 +51,27 @@ abstract class Command extends CommandHandler
     public function getLastAction()
     {
         return Cache::get($this->user_id . '_last_action');
+    }
+
+    public function setLocale($locale) {
+        Cache::put($this->user_id . '_locale', $locale);
+    }
+
+    public function getLocale() {
+        $locale = Cache::get($this->user_id . '_locale');
+        if( empty($locale) ) {
+            $locale = app()->getLocale();
+        }
+
+        return $locale;
+    }
+
+    public function translate($message, $replace = [], $locale = null) {
+
+        if( $locale == null ) {
+            $locale = $this->getLocale();
+        }
+
+        return trans($message, $replace, $locale);
     }
 }
