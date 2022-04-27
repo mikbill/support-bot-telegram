@@ -4,6 +4,7 @@
 namespace App\Services\Telegram\Commands;
 
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use WeStacks\TeleBot\Handlers\CommandHandler;
@@ -18,6 +19,14 @@ abstract class Command extends CommandHandler
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
+
+        $locale = $this->getLocale();
+
+        dump($locale);
+
+        //  Переключим язык пользователя
+        App::setLocale($locale);
+
         $this->checkAuth();
     }
 
@@ -55,10 +64,14 @@ abstract class Command extends CommandHandler
 
     public function setLocale($locale) {
         Cache::put($this->user_id . '_locale', $locale);
+        // Установим язык
+        App::setLocale($locale);
+
     }
 
     public function getLocale() {
         $locale = Cache::get($this->user_id . '_locale');
+
         if( empty($locale) ) {
             $locale = app()->getLocale();
         }
