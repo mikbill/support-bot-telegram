@@ -1,8 +1,5 @@
 <?php
-
-
 namespace App\Services\Telegram\Commands;
-
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +16,8 @@ abstract class Command extends CommandHandler
     {
         parent::__construct($bot, $update);
         $this->checkAuth();
+
+        app()->setLocale($this->getLocale());
     }
 
     public function isAuth()
@@ -54,6 +53,7 @@ abstract class Command extends CommandHandler
     }
 
     public function setLocale($locale) {
+        app()->setLocale($locale);
         Cache::put($this->user_id . '_locale', $locale);
     }
 
@@ -64,14 +64,5 @@ abstract class Command extends CommandHandler
         }
 
         return $locale;
-    }
-
-    public function translate($message, $replace = [], $locale = null) {
-
-        if( $locale == null ) {
-            $locale = $this->getLocale();
-        }
-
-        return trans($message, $replace, $locale);
     }
 }
