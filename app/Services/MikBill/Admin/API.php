@@ -40,11 +40,36 @@ class API extends AdminAPI
             case 'numdogovor':
                 return $this->searchByField('uid', 'numdogovor', $value);
                 break;
+            case 'phone':
+                return $this->searchByPhone($value);
         }
 
         return false;
     }
 
+    private function searchByPhone($phone)
+    {
+        $params = [
+            "phone"                  => $phone,
+            "search_normal_state"    => 0,
+            "search_otkluchen_state" => 0,
+            "search_frozen_state"    => 0,
+            "search_deleted_state"   => 0,
+            "search_all_states"      => 1,
+            "op"                     => 1,
+            "search_display_all"     => 0,
+            "search_internet"        => 0,
+            "ext_legal_person"       => 0,
+            "ext_regular_person"     => 0
+        ];
+        $res = $this->getUsers($params);
+
+        if (isset($res['success'], $res['data']) and $res['success'] == true and is_array($res['data'])) {
+            return $res['data'];
+        }
+
+        return [];
+    }
 
     private function searchByField($field, $key, $value)
     {
@@ -87,34 +112,6 @@ class API extends AdminAPI
 
         if (isset($res['success'], $res['data']) and $res['success'] == true) {
             return $res['data'];
-        }
-
-        return false;
-    }
-
-    public function getHistorySessionsMB($uid)
-    {
-        $params = [
-            'uid' => $uid
-        ];
-        $res = $this->getUserCanvasStat($params);
-
-        if (isset($res['data'][0]['stattraf'])) {
-            return $res['data'][0]['stattraf'];
-        }
-
-        return [];
-    }
-
-    public function getHistoryPaymentsMB($uid)
-    {
-        $params = [
-            'uid' => $uid
-        ];
-        $res = $this->getUserCanvasStat($params);
-
-        if (isset($res['data'][0]['statpay'])) {
-            return $res['data'][0]['statpay'];
         }
 
         return false;

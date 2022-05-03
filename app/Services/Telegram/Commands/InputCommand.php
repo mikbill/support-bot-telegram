@@ -31,6 +31,10 @@ class InputCommand extends Command
             $this->menuSearchUser('numdogovor');
         }
 
+        if ($this->getLastAction() == 'menuSearchByPhone') {
+            $this->menuSearchUser('phone');
+        }
+
     }
 
     private function menuSearchUser($type = 'login')
@@ -99,6 +103,26 @@ class InputCommand extends Command
                                     "text"          => trans("menu_history_payments"),
                                     "callback_data" => "menuHistoryPayments_" . $user['useruid']
                                 ],
+                            ],
+                            [
+                                [
+                                    "text"          => trans("menu_history_tickets"),
+                                    "callback_data" => "menuHistoryTickets_" . $user['useruid']
+                                ],
+                                [
+                                    "text"          => trans("menu_history_auths"),
+                                    "callback_data" => "menuHistoryAuths_" . $user['useruid']
+                                ]
+                            ],
+                            [
+                                [
+                                    "text"          => trans("menu_history_logs"),
+                                    "callback_data" => "menuHistoryLogs_" . $user['useruid']
+                                ],
+                                [
+                                    "text"          => trans("menu_user_kick"),
+                                    "callback_data" => "menuUserKick_" . $user['useruid']
+                                ]
                             ],
                             [
                                 [

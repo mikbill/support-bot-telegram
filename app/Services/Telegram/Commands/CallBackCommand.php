@@ -4,7 +4,7 @@
 namespace App\Services\Telegram\Commands;
 
 use App;
-use App\Models\TelegramUsers;
+use App\Helpers\Helpers;
 use App\Services\MikBill\Admin\API;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
@@ -59,10 +59,16 @@ class CallBackCommand extends Command
                         [
                             "text"          => trans("menu_search_by_login"),
                             "callback_data" => "menuSearchByLogin"
-                        ],
+                        ]
+                    ],
+                    [
                         [
                             'text'          => trans("menu_search_by_contract"),
                             'callback_data' => "menuSearchByDogovor"
+                        ],
+                        [
+                            'text'          => trans("menu_search_by_phone"),
+                            'callback_data' => "menuSearchByPhone"
                         ]
                     ]
                 ]
@@ -103,19 +109,34 @@ class CallBackCommand extends Command
         ]);
     }
 
+    private function menuSearchByPhone($param)
+    {
+        $this->setLastAction('menuSearchByPhone');
+
+        $text = "<b>" . trans("enter_phone") . "</b>";
+        $this->sendMessage([
+            'text'       => $text,
+            'parse_mode' => 'HTML',
+        ]);
+    }
+
     private function menuHistorySessions($param)
     {
         $this->setLastAction('menuHistorySessions');
 
         if (isset($param[1])) {
             $api = new API();
-            $history = $api->getHistorySessionsMB($param[1]);
+            $result = $api->getUserShortHistory([
+                "uid" => $param[1]
+            ]);
+
+            $history = isset($result['data'][0]['stattraf']) ? $result['data'][0]['stattraf'] : [];
 
             $text = "История ceccий: \n\n";
-            $text .= "<pre> " . str_pad('Start time', 20) . " | " . str_pad('Stop time', 20) . " | " . str_pad('Time on', 15) . "</pre>\n";
-            $text .= "<pre> " . str_pad('-', 20, '-') . " + " . str_pad('-', 20, '-') . " + " . str_pad('-', 15, '-') . "</pre>\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('Start time', 20) . " | " . Helpers::str_pad_unicode('Stop time', 20) . " | " . Helpers::str_pad_unicode('Time on', 15) . "</pre>\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('-', 20, '-') . " + " . Helpers::str_pad_unicode('-', 20, '-') . " + " . Helpers::str_pad_unicode('-', 15, '-') . "</pre>\n";
             foreach ($history as $row) {
-                $text .= "<pre> " . str_pad($row['start_time'], 20) . " | " . str_pad($row['stop_time'], 20) . " | " . str_pad($row['time_on'], 15) . "</pre>\n";
+                $text .= "<pre> " . Helpers::str_pad_unicode($row['start_time'], 20) . " | " . Helpers::str_pad_unicode($row['stop_time'], 20) . " | " . Helpers::str_pad_unicode($row['time_on'], 15) . "</pre>\n";
             }
 
             $this->sendMessage([
@@ -207,14 +228,178 @@ class CallBackCommand extends Command
 
         if (isset($param[1])) {
             $api = new API();
-            $history = $api->getHistoryPaymentsMB($param[1]);
+            $result = $api->getUserShortHistory([
+                "uid" => $param[1]
+            ]);
+
+            $history = isset($result['data'][0]['statpay']) ? $result['data'][0]['statpay'] : [];
 
             $text = trans("history_payment") . " \n\n";
-            $text .= "<pre> " . str_pad('Date', 20) . " | " . str_pad('Summa', 10) . " | " . str_pad('Type', 40) . " </pre>\n";
-            $text .= "<pre> " . str_pad('-', 20, '-') . " + " . str_pad('-', 10, '-') . " + " . str_pad('-', 40, '-') . " </pre>\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('Date', 20) . " | " . Helpers::str_pad_unicode('Summa', 10) . " | " . Helpers::str_pad_unicode('Type', 40) . " </pre>\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('-', 20, '-') . " + " . Helpers::str_pad_unicode('-', 10, '-') . " + " . Helpers::str_pad_unicode('-', 40, '-') . " </pre>\n";
             foreach ($history as $row) {
-                $text .= "<pre> " . str_pad($row['date'], 20) . " | " . str_pad($row['summa'], 10) . " | " . str_pad($row['bughtypeid'], 40) . " </pre>\n";
+                $text .= "<pre> " . Helpers::str_pad_unicode($row['date'], 20) . " | " . Helpers::str_pad_unicode($row['summa'], 10) . " | " . Helpers::str_pad_unicode($row['bughtypeid'], 40) . " </pre>\n";
             }
+
+            $this->sendMessage([
+                'text'         => $text,
+                'parse_mode'   => 'HTML',
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                "text"          => trans("menu_search"),
+                                "callback_data" => "menuSearch"
+                            ],
+                            [
+                                'text'          => trans("menu_main"),
+                                'callback_data' => "menuMain"
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+        }
+
+    }
+
+    private function menuHistoryTickets($param)
+    {
+        $this->setLastAction('menuHistoryTickets');
+
+        if (isset($param[1])) {
+            $api = new API();
+            $result = $api->getUserShortHistory([
+                "uid" => $param[1]
+            ]);
+
+            $history = isset($result['data'][0]['tickets']) ? $result['data'][0]['tickets'] : [];
+
+            $text = trans("history_tickets") . " \n\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('Date create', 20) . " | " . Helpers::str_pad_unicode('Category', 25) . " | " . Helpers::str_pad_unicode('Status', 40) . " </pre>\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('-', 20, '-') . " + " . Helpers::str_pad_unicode('-', 25, '-') . " + " . Helpers::str_pad_unicode('-', 40, '-') . " </pre>\n";
+            foreach ($history as $row) {
+                $text .= "<pre> " . Helpers::str_pad_unicode($row['creationdate'], 20) . " | " . Helpers::str_pad_unicode($row['categoryname'], 25) . " | " . Helpers::str_pad_unicode($row['statustypename'], 40) . " </pre>\n";
+            }
+
+            $this->sendMessage([
+                'text'         => $text,
+                'parse_mode'   => 'HTML',
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                "text"          => trans("menu_search"),
+                                "callback_data" => "menuSearch"
+                            ],
+                            [
+                                'text'          => trans("menu_main"),
+                                'callback_data' => "menuMain"
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+        }
+
+    }
+
+    private function menuHistoryAuths($param)
+    {
+        $this->setLastAction('menuHistoryAuths');
+
+        if (isset($param[1])) {
+
+            $api = new API();
+            $result = $api->getUserShortHistory([
+                "uid" => $param[1]
+            ]);
+
+            $history = isset($result['data'][0]['postauth']) ? $result['data'][0]['postauth'] : [];
+
+            $text = trans("history_auths") . " \n\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('Date auth', 20) . " | " . Helpers::str_pad_unicode('Calling Station Id', 20) . " | " . Helpers::str_pad_unicode('Message', 40) . " </pre>\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('-', 20, '-') . " + " . Helpers::str_pad_unicode('-', 20, '-') . " + " . Helpers::str_pad_unicode('-', 40, '-') . " </pre>\n";
+            foreach ($history as $row) {
+                $text .= "<pre> " . Helpers::str_pad_unicode($row['authdate'], 20) . " | " . Helpers::str_pad_unicode($row['callingstationid'], 20) . " | " . Helpers::str_pad_unicode($row['replymessage'], 40) . " </pre>\n";
+            }
+
+            $this->sendMessage([
+                'text'         => $text,
+                'parse_mode'   => 'HTML',
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                "text"          => trans("menu_search"),
+                                "callback_data" => "menuSearch"
+                            ],
+                            [
+                                'text'          => trans("menu_main"),
+                                'callback_data' => "menuMain"
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+        }
+
+    }
+
+    private function menuHistoryLogs($param)
+    {
+        $this->setLastAction('menuHistoryLogs');
+
+        if (isset($param[1])) {
+
+            $api = new API();
+            $result = $api->getUserShortHistory([
+                "uid" => $param[1]
+            ]);
+
+            $history = isset($result['data'][0]['logs']) ? $result['data'][0]['logs'] : [];
+
+            $text = trans("history_logs") . " \n\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('Date', 20) . " | " . Helpers::str_pad_unicode('Value', 40) . " | " . Helpers::str_pad_unicode('Old', 20) . " | " . Helpers::str_pad_unicode('New', 20) . " </pre>\n";
+            $text .= "<pre> " . Helpers::str_pad_unicode('-', 20, '-') . " + " . Helpers::str_pad_unicode('-', 40, '-') . " + " . Helpers::str_pad_unicode('-', 20, '-') . " + " . Helpers::str_pad_unicode('-', 20, '-') . " </pre>\n";
+            foreach ($history as $row) {
+                $text .= "<pre> " . Helpers::str_pad_unicode($row['date'], 20) . " | " . Helpers::str_pad_unicode($row['valuename'], 40) . " | " . Helpers::str_pad_unicode($row['oldvalue'], 20) . " | " . Helpers::str_pad_unicode($row['newvalue'], 20) . " </pre>\n";
+            }
+
+            $this->sendMessage([
+                'text'         => $text,
+                'parse_mode'   => 'HTML',
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                "text"          => trans("menu_search"),
+                                "callback_data" => "menuSearch"
+                            ],
+                            [
+                                'text'          => trans("menu_main"),
+                                'callback_data' => "menuMain"
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+        }
+
+    }
+
+
+    private function menuUserKick($param)
+    {
+        $this->setLastAction('menuUserKick');
+
+        if (isset($param[1])) {
+            $api = new API();
+            $result = $api->userKickOnline([
+                "uid" => $param[1]
+            ]);
+
+            $text = trans("command_sended") . " \n\n";
 
             $this->sendMessage([
                 'text'         => $text,
@@ -262,7 +447,8 @@ class CallBackCommand extends Command
         ]);
     }
 
-    private function menuLocale() {
+    private function menuLocale()
+    {
         $this->setLastAction('menuLocale');
 
         $this->sendMessage([
@@ -289,17 +475,20 @@ class CallBackCommand extends Command
         ]);
     }
 
-    private function menuSeTLocaleUa() {
+    private function menuSeTLocaleUa()
+    {
         $this->setLocale("uk");
         $this->menuMain();
     }
 
-    private function menuSeTLocaleRu() {
+    private function menuSeTLocaleRu()
+    {
         $this->setLocale("ru");
         $this->menuMain();
     }
 
-    private function menuSeTLocaleEn() {
+    private function menuSeTLocaleEn()
+    {
         $this->setLocale("en");
         $this->menuMain();
     }
