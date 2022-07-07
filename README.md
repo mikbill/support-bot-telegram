@@ -28,9 +28,11 @@
  
 ![png image](https://github.com/kagatan/mb-support-bot/blob/master/resources/img/image.png?raw=true)
 
-### 0. Требования
+### Требования
 
 - PHP 7.4 (Рекомендуем PHP 8)
+- Composer version 2.2.x
+
 
 ### 1. Установка
 
