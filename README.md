@@ -28,6 +28,10 @@
  
 ![png image](https://github.com/kagatan/mb-support-bot/blob/master/resources/img/image.png?raw=true)
 
+### 0. Требования
+
+- PHP 7.4 (Рекомендуем PHP 8)
+
 ### 1. Установка
 
 Устанвливаем пакеты и зависимости
@@ -110,7 +114,7 @@ DirectoryIndex /public/index.php
 ```
 ### 3. Настраиваем .env
 
-Конфиг находится в корне диреткории ,файл .env
+Конфиг находится в корне диреткории, файл .env
 
 Необходимые к заполнению:
 
