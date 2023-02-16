@@ -47,11 +47,6 @@ composer install
 # даем права
 sudo chown -R www-data:www-data /var/www/support-bot-telegram
 sudo chmod -R 775 /var/www/support-bot-telegram/storage/
-
-php artisan key:generate
-
-php artisan jwt:secret
-
 ```
 
 ### 2. Nginx 
@@ -118,9 +113,10 @@ DirectoryIndex /public/index.php
 </IfModule>
 
 ```
-### 3. Настраиваем .env
+### 3.1 Настраиваем .env
 
-Конфиг находится в корне диреткории, файл .env
+Конфиг находится в корне диреткории, файл .env.example
+Скопируйте его переименовав в .env
 
 Необходимые к заполнению:
 
@@ -134,6 +130,15 @@ MIKBILL_CABINET_HOST="https://stat.my-domen.ru"
 MIKBILL_HOST="https://admin.my-domen.ru"
 MIKBILL_LOGIN=admin
 MIKBILL_PASSWORD=admin
+
+```
+
+### 3.2 JWT и ключи
+
+```shell script
+php artisan key:generate
+
+php artisan jwt:secret
 
 ```
 
