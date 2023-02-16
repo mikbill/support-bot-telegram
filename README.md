@@ -48,6 +48,10 @@ composer install
 sudo chown -R www-data:www-data /var/www/support-bot-telegram
 sudo chmod -R 775 /var/www/support-bot-telegram/storage/
 
+php artisan key:generate
+
+php artisan jwt:secret
+
 ```
 
 ### 2. Nginx 
