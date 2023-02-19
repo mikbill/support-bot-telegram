@@ -45,6 +45,7 @@ cd support-bot-telegram
 composer install
 
 # даем права
+mkdir -p /var/www/users-bot-telegram/storage/{sessions,views,cache}
 sudo chown -R www-data:www-data /var/www/support-bot-telegram
 sudo chmod -R 775 /var/www/support-bot-telegram/storage/
 ```
